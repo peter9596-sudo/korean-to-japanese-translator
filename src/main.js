@@ -53,6 +53,15 @@ function hiraganaToHepburn(hira) {
 }
 
 const input = document.getElementById('input');
+// 앱 제목에 이모지 추가
+document.querySelector('h1').innerHTML = '🇰🇷➡️🇯🇵❤️ Korean to Japanese Translator';
+
+// 입력란 placeholder에 예시 추가
+input.placeholder = 'ex) 사랑해';
+
+// 결과란에 기본값 추가
+output.innerHTML = 'ex) 愛している (Ai shite iru)';
+output.style.color = '#999';
 const button = document.getElementById('translate');
 const output = document.getElementById('output');
 
