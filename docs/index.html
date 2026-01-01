@@ -4,17 +4,159 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Barun+Gothic:wght@400;700&display=swap" rel="stylesheet">
     <title>Korean to Japanese Translator</title>
-    <script type="module" crossorigin src="/korean-to-japanese-translator/assets/index-Cpnfhck7.js"></script>
-    <link rel="stylesheet" crossorigin href="/korean-to-japanese-translator/assets/index-DHadist0.css">
+    <style>
+      body {
+        margin: 0;
+        font-family: 'Nanum Barun Gothic', sans-serif;
+        background: #ffffff;
+        color: #222;
+      }
+      #app {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 2rem 1.25rem 2.5rem;
+        text-align: center;
+      }
+      h1 {
+        margin: 0 0 1.5rem;
+        font-size: 1.6rem;
+        font-weight: 700;
+      }
+      textarea {
+        width: 100%;
+        height: 110px;
+        margin-bottom: 1rem;
+        font-family: 'Nanum Barun Gothic', sans-serif;
+        border-radius: 10px;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        padding: 0.75rem;
+        font-size: 1rem;
+        box-sizing: border-box;
+        resize: vertical;
+      }
+      button {
+        padding: 0.65rem 1.25rem;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      #output {
+        margin-top: 1rem;
+        padding: 1rem;
+        border: 1px solid #ddd;
+        min-height: 60px;
+        border-radius: 10px;
+        background-color: #f8f9fa;
+        color: #999;
+        text-align: left;
+        line-height: 1.5;
+        white-space: pre-line;
+      }
+    </style>
   </head>
   <body>
     <div id="app">
-      <h1>Korean to Japanese Translator</h1>
-      <textarea id="input" placeholder="Enter Korean text here"></textarea>
+      <h1>🇰🇷➡️🇯🇵 Korean to Japanese Translator for 혜진 ❤️</h1>
+      <textarea id="input" placeholder="ex) 사랑해"></textarea>
       <button id="translate">Translate</button>
-      <div id="output"></div>
+      <div id="output">ex) 愛している (Ai shite iru)</div>
     </div>
+    <script>
+      function numberToJapanese(num) {
+        if (num === 0) return 'れい';
+        const units = ['', 'いち', 'に', 'さん', 'よん', 'ご', 'ろく', 'なな', 'はち', 'きゅう'];
+        const tens = ['', 'じゅう', 'にじゅう', 'さんじゅう', 'よんじゅう', 'ごじゅう', 'ろくじゅう', 'ななじゅう', 'はちじゅう', 'きゅうじゅう'];
+        const hundreds = ['', 'ひゃく', 'にひゃく', 'さんびゃく', 'よんひゃく', 'ごひゃく', 'ろっぴゃく', 'ななひゃく', 'はっぴゃく', 'きゅうひゃく'];
+        const thousands = ['', 'せん', 'にせん', 'さんぜん', 'よんせん', 'ごせん', 'ろくせん', 'ななせん', 'はっせん', 'きゅうせん'];
+        let result = '';
+        let n = Math.abs(num);
+        if (n >= 1000) {
+          const t = Math.floor(n / 1000);
+          result += thousands[t % 10];
+          n %= 1000;
+        }
+        if (n >= 100) {
+          const h = Math.floor(n / 100);
+          result += hundreds[h % 10];
+          n %= 100;
+        }
+        if (n >= 10) {
+          const te = Math.floor(n / 10);
+          result += tens[te % 10];
+          n %= 10;
+        }
+        if (n > 0) {
+          result += units[n];
+        }
+        return result || 'れい';
+      }
 
+      function hiraganaToHepburn(hira) {
+        const map = {
+          'あ': 'a', 'い': 'i', 'う': 'u', 'え': 'e', 'お': 'o',
+          'か': 'ka', 'き': 'ki', 'く': 'ku', 'け': 'ke', 'こ': 'ko',
+          'さ': 'sa', 'し': 'shi', 'す': 'su', 'せ': 'se', 'そ': 'so',
+          'た': 'ta', 'ち': 'chi', 'つ': 'tsu', 'て': 'te', 'と': 'to',
+          'な': 'na', 'に': 'ni', 'ぬ': 'nu', 'ね': 'ne', 'の': 'no',
+          'は': 'ha', 'ひ': 'hi', 'ふ': 'fu', 'へ': 'he', 'ほ': 'ho',
+          'ま': 'ma', 'み': 'mi', 'む': 'mu', 'め': 'me', 'も': 'mo',
+          'や': 'ya', 'ゆ': 'yu', 'よ': 'yo',
+          'ら': 'ra', 'り': 'ri', 'る': 'ru', 'れ': 're', 'ろ': 'ro',
+          'わ': 'wa', 'を': 'wo', 'ん': 'n',
+          'が': 'ga', 'ぎ': 'gi', 'ぐ': 'gu', 'げ': 'ge', 'ご': 'go',
+          'ざ': 'za', 'じ': 'ji', 'ず': 'zu', 'ぜ': 'ze', 'ぞ': 'zo',
+          'だ': 'da', 'ぢ': 'ji', 'づ': 'zu', 'で': 'de', 'ど': 'do',
+          'ば': 'ba', 'び': 'bi', 'ぶ': 'bu', 'べ': 'be', 'ぼ': 'bo',
+          'ぱ': 'pa', 'ぴ': 'pi', 'ぷ': 'pu', 'ぺ': 'pe', 'ぽ': 'po',
+          'ゃ': 'ya', 'ゅ': 'yu', 'ょ': 'yo', 'っ': 'tsu', 'ー': '-'
+        };
+        return hira.replace(/[ぁ-ゖ]/g, c => map[c] || c);
+      }
+
+      const input = document.getElementById('input');
+      const output = document.getElementById('output');
+      const button = document.getElementById('translate');
+
+      // 기본값 세팅
+      document.querySelector('h1').innerHTML = '🇰🇷➡️🇯🇵 Korean to Japanese Translator for 혜진 ❤️';
+      input.placeholder = 'ex) 사랑해';
+      output.innerHTML = 'ex) 愛している (Ai shite iru)';
+      output.style.color = '#999';
+
+      input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault();
+          button.click();
+        }
+      });
+
+      button.addEventListener('click', async () => {
+        const text = input.value.trim();
+        if (!text) return;
+
+        try {
+          const response = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=ja&dt=t&dt=rm&q=' + encodeURIComponent(text));
+          const data = await response.json();
+          const translation = data[0][0][0];
+          const romanization = data[0][1] ? data[0][1][2] : '';
+          let displayTranslation = translation.replace(/\d+/g, (match) => numberToJapanese(parseInt(match)));
+          let displayRomanization = hiraganaToHepburn(romanization).replace(/\d+/g, (match) => numberToJapanese(parseInt(match)));
+          output.innerHTML = displayTranslation + (displayRomanization ? `\n(${displayRomanization})` : '');
+          output.style.color = '#000';
+        } catch (error) {
+          output.textContent = 'Translation failed: ' + error.message;
+          output.style.color = '#c00';
+        }
+      });
+    </script>
   </body>
 </html>
