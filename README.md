@@ -10,4 +10,4 @@ A simple web application that translates Korean text to Japanese using Google Tr
 
 ## Usage
 
-Enter Korean text (including numbers) in the textarea and click "Translate" or press Enter to get the Japanese translation with numbers converted to Japanese readings and romanization in English below.
+Enter Korean text (including numbers) in the textarea and click "Translate" or press Enter to get the Japanese translation with numbers converted to Japanese readings and romanization in English below. Use Shift+Enter for new lines.

@@ -30,12 +30,34 @@ function numberToJapanese(num) {
   return result || 'れい';
 }
 
+function hiraganaToHepburn(hira) {
+  const map = {
+    'あ': 'a', 'い': 'i', 'う': 'u', 'え': 'e', 'お': 'o',
+    'か': 'ka', 'き': 'ki', 'く': 'ku', 'け': 'ke', 'こ': 'ko',
+    'さ': 'sa', 'し': 'shi', 'す': 'su', 'せ': 'se', 'そ': 'so',
+    'た': 'ta', 'ち': 'chi', 'つ': 'tsu', 'て': 'te', 'と': 'to',
+    'な': 'na', 'に': 'ni', 'ぬ': 'nu', 'ね': 'ne', 'の': 'no',
+    'は': 'ha', 'ひ': 'hi', 'ふ': 'fu', 'へ': 'he', 'ほ': 'ho',
+    'ま': 'ma', 'み': 'mi', 'む': 'mu', 'め': 'me', 'も': 'mo',
+    'や': 'ya', 'ゆ': 'yu', 'よ': 'yo',
+    'ら': 'ra', 'り': 'ri', 'る': 'ru', 'れ': 're', 'ろ': 'ro',
+    'わ': 'wa', 'を': 'wo', 'ん': 'n',
+    'が': 'ga', 'ぎ': 'gi', 'ぐ': 'gu', 'げ': 'ge', 'ご': 'go',
+    'ざ': 'za', 'じ': 'ji', 'ず': 'zu', 'ぜ': 'ze', 'ぞ': 'zo',
+    'だ': 'da', 'ぢ': 'ji', 'づ': 'zu', 'で': 'de', 'ど': 'do',
+    'ば': 'ba', 'び': 'bi', 'ぶ': 'bu', 'べ': 'be', 'ぼ': 'bo',
+    'ぱ': 'pa', 'ぴ': 'pi', 'ぷ': 'pu', 'ぺ': 'pe', 'ぽ': 'po',
+    'ゃ': 'ya', 'ゅ': 'yu', 'ょ': 'yo', 'っ': 'tsu', 'ー': '-'
+  };
+  return hira.replace(/[ぁ-ゖ]/g, c => map[c] || c);
+}
+
 const input = document.getElementById('input');
 const button = document.getElementById('translate');
 const output = document.getElementById('output');
 
 input.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') {
+  if (event.key === 'Enter' && !event.shiftKey) {
     event.preventDefault();
     button.click();
   }
@@ -51,8 +73,9 @@ button.addEventListener('click', async () => {
     const translation = data[0][0][0];
     const romanization = data[0][1] ? data[0][1][2] : '';
     let displayTranslation = translation.replace(/\d+/g, (match) => numberToJapanese(parseInt(match)));
-    let displayRomanization = romanization.replace(/\d+/g, (match) => numberToJapanese(parseInt(match)));
+    let displayRomanization = hiraganaToHepburn(romanization).replace(/\d+/g, (match) => numberToJapanese(parseInt(match)));
     output.innerHTML = displayTranslation + (displayRomanization ? `<br>(${displayRomanization})` : '');
+    output.style.color = 'black';
   } catch (error) {
     output.textContent = 'Translation failed: ' + error.message;
   }
