@@ -1,8 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Barun+Gothic:wght@400;700&display=swap');
+
 #app {
   max-width: 600px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  font-family: 'Nanum Barun Gothic', sans-serif;
 }
 
 textarea {
